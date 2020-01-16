@@ -13,7 +13,9 @@
             android:background="@android:color/holo_red_light"
             android:orientation="horizontal">
 
-        <TextView android:layout_width="match_parent"
+        <TextView
+                  android:id="@+id/topView"
+                  android:layout_width="match_parent"
                   android:layout_height="35dp"
                   android:layout_weight="0.5"
                   android:text="Available systems"
@@ -21,7 +23,10 @@
                   android:textFontWeight="32">
         </TextView>
 
-        <Button android:layout_width="match_parent" android:layout_height="wrap_content"
+        <Button
+                android:id="@+id/refreshBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:text="Odswiez"
                 android:layout_weight="1">
         </Button>
