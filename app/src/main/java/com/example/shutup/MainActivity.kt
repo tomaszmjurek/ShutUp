@@ -5,12 +5,15 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.StrictMode
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.ListView
 import kotlinx.android.synthetic.main.activity_main.*
 //import res.layout.activity_main.xml
 
 class MainActivity : AppCompatActivity() {
 //    private var button : Button? = null
+    var testList = arrayOf("Linux1", "Linux2", "Linux3")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,7 +22,13 @@ class MainActivity : AppCompatActivity() {
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
 
-        setContentView(R.layout.activity_main)
+
+//        setContentView(R.layout.activity_main)
+        val adapter = ArrayAdapter(this, R.layout.activity_main, testList)
+//        val testList = arrayListOf<String>()
+//        testList.addAll(listOf("Linux1", "Linux2", "Linux3"))
+        val devicesListView: ListView = findViewById(R.id.devicesListView)
+        devicesListView.adapter = adapter
 
         val btn = findViewById<Button>(R.id.refreshBtn)
         btn.setOnClickListener {
