@@ -3,6 +3,7 @@ package com.example.shutup
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.StrictMode
 import android.view.View
 import android.widget.Button
 import kotlinx.android.synthetic.main.activity_main.*
@@ -13,27 +14,37 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Disable strict mode on android
+        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
+        StrictMode.setThreadPolicy(policy)
+
         setContentView(R.layout.activity_main)
-        //startConnection()
 
         val btn = findViewById<Button>(R.id.refreshBtn)
         btn.setOnClickListener {
 //                openActivity2()
-            startConnection(savedInstanceState)
+            var textR = byteArrayOf()
+            textR = startConnection()
+
+            //Change text
+            setContentView(R.layout.activity_main)
+//            topView.text = textR.toString()
+            topView.text = "Hallo"
         }
     }
 
 
-    private fun startConnection(savedInstanceState: Bundle?) {
+    private fun startConnection() : ByteArray {
         val testCl1 = TestClient()
         var testSer = MyServer()
         testCl1.connect()
-        val textR = byteArrayOf()
+        var textR = byteArrayOf()
         testSer.read(textR)
+        return textR
 
 //        val view = findViewById<View>(R.id.topView)
 //        view.text = textR.toString()
-        setContentView(R.layout.activity_main)
-        topView.text = textR.toString()
+
     }
 }
