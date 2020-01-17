@@ -3,15 +3,24 @@ package com.example.shutup
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.net.InetAddress
+import java.net.ServerSocket
 import java.net.Socket
 
 class MyServer (/*private val host: String, private val port: Int*/) : Thread() {
+    private val server = ServerSocket(7777)
     private var ssocket: Socket? = null
     private var dataInputStream: DataInputStream? = null
     private var dataOutputStream: DataOutputStream? = null
 
     private var received : String = ""
 
+    fun scan() : Int{
+//        while(true) {
+            val client = server.accept()
+            println("Client connected: ${client.inetAddress.hostAddress}")
+            return 1
+//        }
+    }
 
     fun read() : String {
         // Proba nawiazania polaczenia z serwerem

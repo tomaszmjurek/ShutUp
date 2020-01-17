@@ -28,12 +28,15 @@ private var testList = arrayOf("Linux1", "Linux2", "Linux3")
         val btn = findViewById<Button>(R.id.refreshBtn)
         btn.setOnClickListener {
 //            var textR = byteArrayOf()
-            var text : String = startConnection()
-
+            topView.text = "Scanning..."
+//            var text : String = startConnection()
+            var testSer = MyServer()
+            var i = 0
+            i = testSer.scan()
             //Change text
             setContentView(R.layout.activity_main)
 //            topView.text = textR.toString()
-            topView.text = text
+            if (i == 1) topView.text = "found 1"
         }
     }
 
