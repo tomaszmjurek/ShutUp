@@ -11,7 +11,7 @@
                 tools:context="com.example.shutup.MainActivity">
 
     <LinearLayout android:id="@+id/ll1"
-                  android:gravity="top"
+                    android:gravity="top"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -19,13 +19,13 @@
         <TextView
                 android:id="@+id/topView"
                 android:layout_width="match_parent"
-                android:layout_height="30dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="Visible systems"
                 android:textStyle="bold"
                 android:textAlignment="center"
                 android:autoSizeTextType="uniform"
-                android:autoSizeMinTextSize="20sp"
+                android:autoSizeMinTextSize="15sp"
                 android:autoSizeMaxTextSize="100sp"
                 android:autoSizeStepGranularity="2sp"/>
 
