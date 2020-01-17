@@ -22,12 +22,11 @@ class MainActivity : AppCompatActivity() {
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
 
-
-//        setContentView(R.layout.activity_main)
-        val adapter = ArrayAdapter(this, R.layout.activity_main, testList)
+        setContentView(R.layout.activity_main)
+        val adapter = ArrayAdapter(this, R.layout.listview_item, testList)
 //        val testList = arrayListOf<String>()
 //        testList.addAll(listOf("Linux1", "Linux2", "Linux3"))
-        val devicesListView: ListView = findViewById(R.id.devicesListView)
+//        val devicesListView: ListView = findViewById(R.id.devicesListView)
         devicesListView.adapter = adapter
 
         val btn = findViewById<Button>(R.id.refreshBtn)
