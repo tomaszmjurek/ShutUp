@@ -8,7 +8,7 @@ import java.net.Socket
 import java.util.*
 import kotlin.concurrent.thread
 
-class MyServer (/*private val host: String, private val port: Int*/) : Thread() {
+class Server (/*private val host: String, private val port: Int*/) : Thread() {
     private val server = ServerSocket(7777)
     private var ssocket: Socket? = null
     private var dataInputStream: DataInputStream? = null
@@ -31,6 +31,15 @@ class MyServer (/*private val host: String, private val port: Int*/) : Thread() 
 //        }
     }
 
+    fun testListView() : Int {
+        var c = Client()
+        c.setIp("10.2.3.1")
+        connectedClients += c
+//        val activity = null
+
+        return 1
+    }
+
     private fun readClient(client : Socket) {
         val reader = Scanner(client.getInputStream())
         var newClient = Client()
@@ -40,9 +49,9 @@ class MyServer (/*private val host: String, private val port: Int*/) : Thread() 
             if(str.isNotEmpty()) {
                 newClient.setIp(str)
                 connectedClients += newClient
-//                MainActivity.getI
-                val activity = null
-                (activity as MainActivity).updateDevicesList(this)
+
+//                val activity = null
+//                (activity as MainActivity).updateDevicesList(this)
             }
         } catch (e : java.lang.Exception) {
             println("Error reading message")

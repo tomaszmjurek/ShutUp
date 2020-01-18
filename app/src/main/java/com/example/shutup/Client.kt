@@ -11,6 +11,12 @@ class Client () {
         this.ip = ip
     }
 
+    fun getIp() : String? {
+        return this.ip
+    }
+
+
+
 //    private var csocket: Socket? = null
 
 //    public fun connect() {
