@@ -15,13 +15,13 @@ int main(){
 	struct sockaddr_in localaddr;
 	localaddr.sin_family = AF_INET;
 	localaddr.sin_addr.s_addr = INADDR_ANY; //inet_addr("31.1.2.1") //or yourself
-	localaddr.sin_port = htons(7777); //inny?
+	localaddr.sin_port = htons(1234); //inny?
 	bind(sockfd, (struct sockaddr *)&localaddr, sizeof(localaddr));
 
 	// Connect to remote server
 	struct sockaddr_in remoteaddr;
 	remoteaddr.sin_family = AF_INET;
-	remoteaddr.sin_addr.s_addr = inet_addr("31.1.2.1");
+	remoteaddr.sin_addr.s_addr = inet_addr("198.143.55.17"); //31.1.2.1
 	remoteaddr.sin_port = htons(7777);
 
 	//listen(sockfd, 10);
@@ -38,7 +38,8 @@ int main(){
         
     	int sent = write(sockfd, buf, 6);
 	printf("SENT: %d\n", sent);
-    //odczyt info z serwera
+
+    	// odczyt info z serwera
 //    int rc = read(fd, &buf, 256);
 //    write(1, buf, rc);
    	close(sockfd);
