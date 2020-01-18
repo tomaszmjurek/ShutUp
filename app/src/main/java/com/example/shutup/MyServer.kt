@@ -5,21 +5,48 @@ import java.io.DataOutputStream
 import java.net.InetAddress
 import java.net.ServerSocket
 import java.net.Socket
+import java.util.*
+import kotlin.concurrent.thread
 
 class MyServer (/*private val host: String, private val port: Int*/) : Thread() {
     private val server = ServerSocket(7777)
     private var ssocket: Socket? = null
     private var dataInputStream: DataInputStream? = null
     private var dataOutputStream: DataOutputStream? = null
-
+    private var connectedClients = arrayOf<Client>()
     private var received : String = ""
 
-    fun scan() : Int{
+    fun getConnectedClients(): Array<Client> {
+        return this.connectedClients
+    }
+
+    fun scanClients() : Int{
 //        while(true) {
             val client = server.accept()
             println("Client connected: ${client.inetAddress.hostAddress}")
+
+            // Client in new thread
+            thread{ readClient(client) }
             return 1
 //        }
+    }
+
+    private fun readClient(client : Socket) {
+        val reader = Scanner(client.getInputStream())
+        var newClient = Client()
+
+        try {
+            val str = reader.nextLine() //ip
+            if(str.isNotEmpty()) {
+                newClient.setIp(str)
+                connectedClients += newClient
+//                MainActivity.getI
+                val activity = null
+                (activity as MainActivity).updateDevicesList(this)
+            }
+        } catch (e : java.lang.Exception) {
+            println("Error reading message")
+        }
     }
 
     fun read() : String {

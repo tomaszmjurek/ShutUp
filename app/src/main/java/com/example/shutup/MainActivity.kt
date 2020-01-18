@@ -8,8 +8,11 @@ import android.widget.Button
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
+
 //    private var button : Button? = null
 private var testList = arrayOf("Linux1", "Linux2", "Linux3")
+private var devicesList = arrayOf<Client>()
+//private var server = MyServer()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,35 +21,33 @@ private var testList = arrayOf("Linux1", "Linux2", "Linux3")
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
 
-        setContentView(R.layout.activity_main)
-        val adapter = ArrayAdapter(this, R.layout.listview_item, testList)
-//        val testList = arrayListOf<String>()
-//        testList.addAll(listOf("Linux1", "Linux2", "Linux3"))
-//        val devicesListView: ListView = findViewById(R.id.devicesListView)
-        devicesListView.adapter = adapter
+        // Initialize server
+        val server = MyServer()
 
-        val btn = findViewById<Button>(R.id.refreshBtn)
+        setContentView(R.layout.activity_main)
+        val btn = findViewById<Button>(R.id.refreshButton)
         btn.setOnClickListener {
-//            var textR = byteArrayOf()
-            topView.text = "Scanning..."
-//            var text : String = startConnection()
-            var testSer = MyServer()
+//            topView.text = "Scanning..."
             var i = 0
-            i = testSer.scan()
+            i = server.scanClients()
             //Change text
             setContentView(R.layout.activity_main)
-//            topView.text = textR.toString()
+
             if (i == 1) topView.text = "found 1"
         }
     }
 
+    fun updateDevicesList(server: MyServer) {
+        devicesList = server.getConnectedClients()
 
-    private fun startConnection() : String {
-//        val testCl1 = TestClient()
-
-        var testSer = MyServer()
-//        testCl1.connect()
-//        var textR = byteArrayOf()
-        return testSer.read()
+        if (devicesList.isNotEmpty()) {
+            setContentView(R.layout.activity_main)
+            val adapter = ArrayAdapter(this, R.layout.listview_item, devicesList)
+            devicesListView.adapter = adapter
+        }
     }
+
+//    companion object {
+//        fun updateList() {(activity as MainActivity).updateDevicesList()}
+//    }
 }
