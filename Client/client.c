@@ -17,30 +17,35 @@ int main(){
 	localaddr.sin_family = AF_INET;
 	localaddr.sin_addr.s_addr = INADDR_ANY;
 	localaddr.sin_port = htons(local_port);
-	bind(sockfd, (struct sockaddr *)&localaddr, sizeof(localaddr));
 
 	// Connect to remote server
 	struct sockaddr_in remoteaddr;
 	remoteaddr.sin_family = AF_INET;
-	remoteaddr.sin_addr.s_addr = inet_addr("192.168.0.11"); //GET_REMOTE
+	remoteaddr.sin_addr.s_addr = inet_addr("192.168.0.11");
 	remoteaddr.sin_port = htons(7777);
 
 	// Wait for the server to be available
 	int con = -1;
+	printf("Waiting for server\n");
 	while(con == -1) {
 		con = connect(sockfd, (struct sockaddr *)&remoteaddr, sizeof(remoteaddr));
 		sleep(1); // for testing less
-		printf(".\n");	
+		printf(". ");	
 	}
-	printf("Connected: %d\n", con);
+	printf("\nConnected: %d\n", con);
 
     	// Read command from remote
 	char buf[16]; // ex. 'shutdown -h now'
-	int rcv = read(sockfd, &buf, 16);
+	printf("Waiting for message\n");
+	int rcv = 1;
+	rcv = read(sockfd, &buf, 16);
+
 	if (rcv == -1) {
 		printf("Error reading command\n");
 		return -1;
 	}
+
+	//printf("%s\n", buf);
 
 	// Close socket and execute command
 	close(sockfd);	
