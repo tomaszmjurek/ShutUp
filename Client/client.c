@@ -29,14 +29,14 @@ int main(){
 	printf("Waiting for server\n");
 	while(con == -1) {
 		con = connect(sockfd, (struct sockaddr *)&remoteaddr, sizeof(remoteaddr));
-		sleep(1); // for testing less
+		sleep(2);
 		printf(". ");	
 	}
-	printf("\nConnected: %d\n", con);
+	printf("\nConnected:\n");
 
     	// Read command from remote
 	char buf[16]; // ex. 'shutdown -h now'
-	printf("Waiting for message\n");
+	printf("Waiting for command\n");
 	int rcv = 1;
 	rcv = read(sockfd, &buf, 16);
 
@@ -44,8 +44,6 @@ int main(){
 		printf("Error reading command\n");
 		return -1;
 	}
-
-	//printf("%s\n", buf);
 
 	// Close socket and execute command
 	close(sockfd);	
