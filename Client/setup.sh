@@ -10,7 +10,8 @@ mv shutupcli /etc/shutup/
 
 # Make script to run program on startup in background
 echo '#!/bin/bash' > shutup.sh
-echo './etc/shutup/shutupcli > /dev/null 2>&1 &' >> shutup.sh
+echo 'cd /etc/shutup' >> shutup.sh
+echo './shutupcli > /dev/null 2>&1 &' >> shutup.sh
 chmod +x shutup.sh
 mv -f shutup.sh /etc/init.d/
 update-rc.d shutup.sh defaults
