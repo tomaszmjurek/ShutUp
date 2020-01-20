@@ -1,20 +1,20 @@
 package com.example.shutup
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.StrictMode
 import android.view.View
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlin.concurrent.thread
 
-class MainActivity : AppCompatActivity(), View.OnClickListener {
+class MainActivity : AppCompatActivity(), View.OnClickListener, AdapterView.OnItemClickListener {
 
-//    private var button : Button? = null
-private var testList = arrayOf("Linux1", "Linux2", "Linux3")
-private var devicesList = arrayOf<Client>()
-private val server : Server = Server()
-//private var server = MyServer()
+    private var devicesList = arrayOf<Client>()
+    private val server : Server = Server()
+    private var selectedItem : Int = -1
+    val emptyList = listOf("List is empty")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,65 +23,65 @@ private val server : Server = Server()
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
 
-        // Initialize server
-//        val server = Server()
-
+        // Let's me use content variables
         setContentView(R.layout.activity_main)
-        val empty = listOf<String>("List is empty")
-        val adapter = ArrayAdapter(this, R.layout.listview_item, empty)
+
+        val adapter = ArrayAdapter(this, R.layout.listview_item, emptyList)
+       // adapter.setNotifyOnChange(true) //TODO
         devicesListView.adapter = adapter
 
-        refreshButton.setOnClickListener(this)
-//        {
-////            topView.text = "Scanning..."
-//            var i = 0
-////            i = server.scanClients()
-//            //test
-//            i = server.testListView()
-//            //Change text
-////            setContentView(R.layout.activity_main)
-//            if (i == 1) {
-//                topView.text = "Scan completed"
-//                //updateList
-//            }
-//        }
+        // Constant scanning of clients
+        thread { server.scanClients() }
 
+        // Buttons click listening
+        refreshButton.setOnClickListener(this)
         shutdownButton.setOnClickListener(this)
+//        devicesListView.choiceMode = ListView.CHOICE_MODE_MULTIPLE //TODO
+        devicesListView.onItemClickListener = this
     }
+
 
     override fun onClick(v: View) {
-//        setContentView(R.layout.activity_main)
         when (v.id) {
             refreshButton.id -> updateDevicesList()
-            shutdownButton.id -> server.testListView()
-            else -> topView.text = "Error"
+            shutdownButton.id -> if (selectedItem != -1) { shutDown() }
         }
     }
 
+    /**
+     * Finds selected
+     */
+    private fun shutDown() {
+        devicesList[selectedItem].getIp()?.let { server.sendCommand(it) }
+        updateDevicesList()
+    }
+
+    /**
+     *  Checks the list of available clients and shows them in ListView
+     */
     private fun updateDevicesList() {
-        topView.text = "error2"
+        selectedItem = -1
+        devicesList = emptyArray()
         devicesList = server.getConnectedClients()
-        var empty = listOf("List is empty")
-//        setContentView(R.layout.activity_main)
-        var adapter = ArrayAdapter(this, R.layout.listview_item, empty)
+        var adapter = ArrayAdapter(this, R.layout.listview_item, emptyList)
 
         if (devicesList.isNotEmpty()) {
-//                var ips = arrayOf<String>()
-//                devicesList.forEach {
-//                ips += it.getIp().toString();
-//                adapter = ArrayAdapter(this, R.layout.listview_item, devicesList)
-//                devicesListView.adapter = adapter
-//                topView.text = "ip not null"
-                var empty1 = listOf(devicesList.get(0).getIp())
-              adapter = ArrayAdapter(this, R.layout.listview_item, empty1)
-//            }
+            val ips = mutableListOf<String>()
+            devicesList.forEach {
+                ips += it.getIp().toString()
+            }
+            adapter = ArrayAdapter(this, R.layout.listview_item, ips)
         }
         devicesListView.adapter = adapter
     }
 
+    /**
+     *  Handling list element selection
+     */
+    override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        if (devicesList.isNotEmpty()) {
+            selectedItem = position
+        }
+    }
 
-
-//    companion object {
-//        fun updateList() {(activity as MainActivity).updateDevicesList()}
-//    }
 }

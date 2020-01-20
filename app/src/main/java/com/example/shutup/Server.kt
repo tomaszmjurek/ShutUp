@@ -1,89 +1,74 @@
 package com.example.shutup
 
-import java.io.DataInputStream
-import java.io.DataOutputStream
+import android.util.Log
 import java.net.InetAddress
 import java.net.ServerSocket
 import java.net.Socket
-import java.util.*
+import java.nio.charset.Charset
 import kotlin.concurrent.thread
 
-class Server (/*private val host: String, private val port: Int*/) : Thread() {
-    private val server = ServerSocket(7777)
-    private var ssocket: Socket? = null
-    private var dataInputStream: DataInputStream? = null
-    private var dataOutputStream: DataOutputStream? = null
+class Server : Thread() {
+    private var server = ServerSocket(7777)
     private var connectedClients = arrayOf<Client>()
-    private var received : String = ""
 
     fun getConnectedClients(): Array<Client> {
         return this.connectedClients
     }
 
-    fun scanClients() : Int{
-//        while(true) {
+    /**
+     *  Scanning clients is running always when app is open. Open port: 7777
+     *  Running client in new thread
+     */
+    fun scanClients() {
+        while(true) {
             val client = server.accept()
             println("Client connected: ${client.inetAddress.hostAddress}")
-
-            // Client in new thread
-            thread{ readClient(client) }
-            return 1
-//        }
-    }
-
-    fun testListView() : Int {
-        var c = Client()
-        c.setIp("10.2.3.1")
-        connectedClients += c
-//        val activity = null
-
-        return 1
-    }
-
-    private fun readClient(client : Socket) {
-        val reader = Scanner(client.getInputStream())
-        var newClient = Client()
-
-        try {
-            val str = reader.nextLine() //ip
-            if(str.isNotEmpty()) {
-                newClient.setIp(str)
-                connectedClients += newClient
-
-//                val activity = null
-//                (activity as MainActivity).updateDevicesList(this)
-            }
-        } catch (e : java.lang.Exception) {
-            println("Error reading message")
+            thread{ addClient(client) }
         }
     }
 
-    fun read() : String {
-        // Proba nawiazania polaczenia z serwerem
-//        var rcvmsg : ByteArray? = null
+    /**
+     *  Adding new client to list of available clients
+     */
+    private fun addClient(client : Socket) {
         try {
-            ssocket = Socket(InetAddress.getLocalHost(), 7777) //host = localhost?
-            println("nawiazano polacznie")
+            var c = Client(client)
+            connectedClients += c
+        } catch (e : java.lang.Exception) {
+            println("Error adding new client")
+        }
+    }
 
-            //odczytanie ip (string>), dodanie do listy
-            dataInputStream = ssocket!!.getInputStream() as DataInputStream?
-
-//            rcvmsg = ByteArray(5)
-            while (!ssocket!!.isClosed) {
-                if (dataInputStream!!.available() > 0) {
-                    val tmp = ByteArray(1024)
-                    dataInputStream!!.read(tmp)
-                    received = String(tmp)
+    /**
+     *  Using clients socket output stream function sends him shutdown commands
+     *  resulting in closing the system immediately
+     */
+    fun sendCommand(clientsIp : InetAddress) {
+        val command = "shutdown -h now\n"
+        try {
+            connectedClients.forEach {
+                if (clientsIp == it.getIp()) {
+                    it.socket.getOutputStream().write((command).toByteArray(Charset.defaultCharset()))
+                    Log.d("Server", "Command sent")
+                    it.socket.close()
+                    removeClient(clientsIp)
                 }
             }
-//            dataInputStream!!.read(rcvmsg, 0, 5)
-//            print("Odczytano:" + re)
-
-            ssocket!!.close()
         } catch (e : Exception) {
-            println("Blad laczenia")
-        } //close()
-        return received
+            println("Error sending command")
+        }
+    }
+
+    /**
+     *  Finds client on list, removes it and closes it's socket
+     */
+    private fun removeClient (clientIp : InetAddress) {
+        connectedClients.forEach {
+            if (clientIp == it.getIp()) {
+                it.closeSocket()
+                connectedClients.drop(connectedClients.indexOf(it))
+            }
+        }
     }
 
 }

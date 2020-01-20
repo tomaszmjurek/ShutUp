@@ -1,28 +1,18 @@
 package com.example.shutup
 
-import java.io.DataInputStream
-import java.io.DataOutputStream
+import java.net.InetAddress
 import java.net.Socket
 
-class Client () {
-    private var ip : String? = null
+class Client (sock : Socket) {
+    private val ip : InetAddress = sock.inetAddress
+    val socket : Socket = sock
 
-    fun setIp(ip : String) {
-        this.ip = ip
-    }
-
-    fun getIp() : String? {
+    fun getIp() : InetAddress? {
         return this.ip
     }
 
+    fun closeSocket() {
+        this.socket.close()
+    }
 
-
-//    private var csocket: Socket? = null
-
-//    public fun connect() {
-//        csocket = Socket("localhost", 7777)
-//        val dout = DataOutputStream(csocket!!.getOutputStream())
-//        val sndmsg = byteArrayOf(1, 2, 3, 4, 5)
-//        dout.write(sndmsg)
-//    }
 }

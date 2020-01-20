@@ -16,9 +16,8 @@ client.c - zawiera potrzebne dane serwera, tworzy gniazdo służące do połącz
 
 Client
 ```
-$ gcc client.c -o client
-$ ./client
+$ sudo sh setup.sh
 ```
 Serwer
-- przenieść plik shutup.apk do pamięci telefonu
-- wgrać aplikację za pośrednictwem IDE, smartfon musi mieć włączony moduł debugowania USB
+- wgrać aplikację przy włączonym module debugowania USB
+- kliknąc ikonę w celu uruchomienia
