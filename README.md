@@ -14,9 +14,10 @@ client.c - zawiera potrzebne dane serwera, tworzy gniazdo służące do połącz
 
 ## Kompilacja i uruchomienie
 
-Client
+Client (Linux)
 ```
 $ sudo sh setup.sh
 ```
 
-W planach dodanie wersji na system Windows...
+
+(W planach dodanie wersji na system Windows...)
