@@ -18,6 +18,5 @@ Client
 ```
 $ sudo sh setup.sh
 ```
-Serwer
-- wgrać aplikację przy włączonym module debugowania USB
-- kliknąc ikonę w celu uruchomienia
+
+W planach dodanie wersji na system Windows...
