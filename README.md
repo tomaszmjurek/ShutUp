@@ -19,5 +19,7 @@ Client (Linux)
 $ sudo sh setup.sh
 ```
 
+## Wygląd
+<img src=https://github.com/tomaszmjurek/readme-images/blob/master/shutup.jpg height="600">
 
 (W planach dodanie wersji na system Windows...)
